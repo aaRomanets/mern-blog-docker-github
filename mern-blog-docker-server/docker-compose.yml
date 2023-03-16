@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    container_name: server-web-mern-blog
+    command: yarn dev
+    volumes:
+      - /app
+      - /app/node_modules
+    ports:
+      - "3002:4002"
+        # MongoDB services
+  mongo_db:
+    container_name: mongodb-mern-blog
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+  api:
+    build: .
+    container_name: server-api-mern-blog
+    ports:
+      - "4002:3002"
+    environment:
+      PORT: 3002
+      MONGODB_URI: mongodb://mongo_db:27017
+      DB_NAME: mern-blog
+      NAME: Aleksandr
+    depends_on:
+      - mongo_db  
+    volumes:
+      - /app
+      - /app/node_modules
+volumes:
+  mongo_db: {}
